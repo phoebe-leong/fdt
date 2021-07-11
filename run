@@ -1,0 +1,45 @@
+#!/bin/sh
+# Run this script before running the program for the first time or when updating
+# If you find any errors or have any improvements please make a pull request or issue in https://github.com/phoebe-leong/fdt
+
+# This script assumes that the file has not been downloaded into $HOME from the start
+# I am also assuming that this is only runnable by unix computers
+
+if [ -f fdt ]
+then
+    rm fdt
+fi
+
+if [ ! "$!" == "echo ~/run" -o ! "$!" == "$HOME/run" ]
+then
+    g++ main.cpp -w -o ~/fdt
+elif [ "$!" == "echo ~/run" -o "$!" == "$HOME/run" ]
+then
+    g++ ~/fdt-src/main.cpp -w -o ~/fdt
+fi
+
+if [ -f ~/fdt ]
+then
+    if [ ! "$!" == "echo ~/run" -o ! "$!" == "$HOME/run" ]
+    then
+        if [ ! -d ~/fdt-src ]
+        then
+            mkdir ~/fdt-src
+            touch ~/fdt-src/main.cpp
+            cp main.cpp ~/fdt-src/main.cpp
+        fi
+        #rm main.cpp
+        cp run ~/run
+        chmod +x ~/run
+        touch termin.sh
+        printf "rm - > useless run\nrm useless\nrm termin.sh" >> termin.sh
+        chmod +x termin.sh
+    fi
+    echo "Compiled Successfully!"
+    #if [ -f termin.sh ]
+    #then
+        #./termin.sh
+    #fi
+else
+    echo "Compiled unsuccessfully, please review the source file"
+fi
