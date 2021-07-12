@@ -10,12 +10,16 @@ then
     rm fdt
 fi
 
-if [ ! "$!" == "echo ~/run" -o ! "$!" == "$HOME/run" ]
+if [ ! "$PWD" == "$HOME" -a ! "$!" == "$HOME/run" ]
 then
+    sleep 5
     g++ main.cpp -w -o ~/fdt
 elif [ "$!" == "echo ~/run" -o "$!" == "$HOME/run" ]
 then
     g++ ~/fdt-src/main.cpp -w -o ~/fdt
+elif [ "$PWD" == "$HOME" ]
+then
+    g++ ./fdt-src/main.cpp -w -o ~/fdt
 fi
 
 if [ -f ~/fdt ]
