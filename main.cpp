@@ -1,38 +1,41 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 int main(int charc, char* charv[]) {
 
-    if (charc < 2 || charc > 3) {
-        std::cout << "Usage: ~/ftd <param> <param>\n";
+    if (charc != 3) {
+        std::cout << "Usage: " << charv[0] << " <file-one> <file-two>\n";
         return -1;
     }
 
-    #define maxfilelines 1000
-    std::string fileonedata[maxfilelines + 1];
-    std::string filetwodata[maxfilelines + 1];
-    std::string fileonepath = charv[1], filetwopath = charv[2];
+    std::vector<std::string> fileonedata;
+    std::vector<std::string> filetwodata;
 
-    std::ifstream fileone(fileonepath);
-    std::ifstream filetwo(filetwopath);
+    std::ifstream fileone(charv[1]);
+    std::ifstream filetwo(charv[2]);
 
     if (!fileone || !filetwo) {
         fileone.close();
         filetwo.close();
-        std::cout << "Invalid path!\n";
+        std::cout << "Invalid path\\s!\n";
         return -1;
     }
 
-    if (fileonepath == filetwopath) {
+    if (charv[1] == charv[2]) {
         std::cout << "Your files are the same\n";
         return 0;
     }
 
-    for (int i = 0; !fileone.eof() && i <= maxfilelines; i++) {
-        getline(fileone, fileonedata[i]);
+    for (int i = 0; !fileone.eof(); i++) {
+        std::string line;
+        getline(fileone, line);
+        fileonedata.push_back(line);
     }
-    for (int i = 0; !filetwo.eof() && i <= maxfilelines; i++) {
-        getline(filetwo, filetwodata[i]);
+    for (int i = 0; !filetwo.eof(); i++) {
+        std::string line;
+        getline(filetwo, line);
+        filetwodata.push_back(line);
     }
 
     int fileonedatasize = 0, filetwodatasize = 0;
@@ -62,9 +65,8 @@ int main(int charc, char* charv[]) {
 
     if (duplicatelines == fileonedatasize) {
         std::cout << "Your two files are the same\n";
-        return 0;
     } else {
         std::cout << "Your two files aren't the same\n";
-        return 0;
     }
+    return 0;
 }
