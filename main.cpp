@@ -18,7 +18,7 @@ int main(int charc, char* charv[]) {
     if (!fileone || !filetwo) {
         fileone.close();
         filetwo.close();
-        std::cout << "Invalid path\\s!\n";
+        std::cout << "Invalid path/s!\n";
         return -1;
     }
 
@@ -38,32 +38,19 @@ int main(int charc, char* charv[]) {
         filetwodata.push_back(line);
     }
 
-    int fileonedatasize = 0, filetwodatasize = 0;
-
-    for (int i = 0; i < sizeof(fileonedata) / sizeof(fileonedata[0]); i++) {
-        if (!fileonedata[i].empty()) {
-            fileonedatasize++;
-        }
-    }
-    for (int i = 0; i < sizeof(filetwodata) / sizeof(filetwodata[0]); i++) {
-        if (!filetwodata[i].empty()) {
-            filetwodatasize++;
-        }
-    }
-
-    if (fileonedatasize != filetwodatasize) {
+    if (fileonedata.size() != filetwodata.size()) {
         std::cout << "Your two files aren't the same\n";
         return 0;
     }
 
     int duplicatelines = -1;
-    for (int i = 0; i <= fileonedatasize; i++) {
+    for (int i = 0; i <= fileonedata.size(); i++) {
         if (fileonedata[i] == filetwodata[i]) {
             duplicatelines++;
         }
     }
 
-    if (duplicatelines == fileonedatasize) {
+    if (duplicatelines == fileonedata.size()) {
         std::cout << "Your two files are the same\n";
     } else {
         std::cout << "Your two files aren't the same\n";
