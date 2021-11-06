@@ -3,6 +3,7 @@
 #include <string.h>
 #include "fdt.h"
 
+#define FDT_VERSION 1.1
 #define MAX_LEN 32767 + 1 // Integer limit (+1 for null terminator)
 
 struct file_contents
@@ -31,6 +32,7 @@ int main(int charc, char** charv)
             return -1;
         }
 
+        // Adding files to the "files" array - Iterating through the array and sequentially checking the previous item
         for (int j = 0; j < MAX_LEN; j++)
         {
             if ((j == 0 && files[j] == NULL) || (files[j - 1] != NULL && files[j] == NULL))
@@ -41,6 +43,7 @@ int main(int charc, char** charv)
         }
     }
 
+    // Checking the file names passed for similarity
     for (int i = 1; i < charc; i++)
     {
         if (strcmp(charv[i], charv[1]) != 0) break;
@@ -53,6 +56,7 @@ int main(int charc, char** charv)
         }
     }
 
+    // Getting the lines of the files and putting them into the "contents" array (which contains an array of structs which contain an array of char*'s)
     for (int i = 0; i < charc - 1; i++)
     {
         for (int j = 0; feof(files[i]) == 0 && j < MAX_LEN; j++)
@@ -62,6 +66,7 @@ int main(int charc, char** charv)
         }
     }
 
+    // Iterating through the files and comparing their lines to the first files' line on the same line
     for (int i = 0; i < charc - 1; i++)
     {
         for (int j = 0; contents[i].lines[j] != NULL; j++)
