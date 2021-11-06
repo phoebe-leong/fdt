@@ -3,7 +3,7 @@
 #include <string.h>
 #include "fdt.h"
 
-#define FDT_VERSION 1.1
+#define FDT_VERSION 1.2
 #define MAX_LEN 32767 + 1 // Integer limit (+1 for null terminator)
 
 struct file_contents
@@ -43,7 +43,7 @@ int main(int charc, char** charv)
         }
     }
 
-    // Checking the file names passed for similarity
+    // Checking the file names passed for similarity to the first file passed
     for (int i = 1; i < charc; i++)
     {
         if (strcmp(charv[i], charv[1]) != 0) break;
@@ -66,7 +66,7 @@ int main(int charc, char** charv)
         }
     }
 
-    // Iterating through the files and comparing their lines to the first files' line on the same line
+    // Iterating through the files and comparing their lines to the first files' lines
     for (int i = 0; i < charc - 1; i++)
     {
         for (int j = 0; contents[i].lines[j] != NULL; j++)
