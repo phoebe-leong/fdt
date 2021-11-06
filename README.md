@@ -1,2 +1,2 @@
 # fdt
-A simple command line application that allows users to compare two files
+A simple command line application written in C that allows users to compare files
