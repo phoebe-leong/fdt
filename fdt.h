@@ -1,11 +1,14 @@
 #pragma once
+#include <stdlib.h>
 #include <stdio.h>
 
-void close(FILE* arr[], const int limit)
+void help(const char* filename)
 {
-    for (int i = 0; i < limit; i += 2)
-    {
-        fclose(arr[i - 1]);
-        fclose(arr[i]);
-    }
+    puts("--HELP--\n");
+
+    printf("FDT Version %.1f\n", FDT_VERSION);
+    printf("Maximum length for files: %lu lines\n\n", (sizeof(contents) / sizeof(contents[0])) - 1);
+    printf("Usage: %s <file-one> <file-two...\n", filename);
+
+    exit(0);
 }
