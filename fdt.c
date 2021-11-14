@@ -1,23 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
+
+#define FDT_VERSION 2.0
+
+char* contents[INT_MAX / 2];
+
 #include "fdt.h"
-
-#define FDT_VERSION 1.2
-#define MAX_LEN 32767 + 1 // Integer limit (+1 for null terminator)
-
-struct file_contents
-{
-    char* lines[MAX_LEN];
-};
-
-FILE* files[MAX_LEN];
-struct file_contents contents[MAX_LEN];
-
 int main(int charc, char** charv)
 {
     if (charc < 3)
     {
+        // Run the help command if '-h' is the first/only argument
+        if (charc == 2 && strcmp(charv[1], "-h") == 0) help(charv[0]);
+
+        puts("At least two valid files or a command must be passed to the program");
         printf("Usage: %s <file-one> <file-two...\n", charv[0]);
         return -1;
     }
@@ -25,62 +23,46 @@ int main(int charc, char** charv)
     for (int i = 1; i < charc; i++)
     {
         FILE* file = fopen(charv[i], "r");
+
         if (file == NULL)
         {
-            close(files, charc);
+            fclose(file);
             printf("Invalid file: %s\n", charv[i]);
             return -1;
         }
+        fclose(file);
+    }
 
-        // Adding files to the "files" array - Iterating through the array and sequentially checking the previous item
-        for (int j = 0; j < MAX_LEN; j++)
+    // Open the first file and put it's lines into the "contents" array to be compared
+    FILE* file = fopen(charv[1], "r");
+    for (int i = 0; i != (INT_MAX / 2) + 1 && feof(file) == 0; i++)
+    {
+        size_t size = INT_MAX;
+        contents[i] = malloc(size + 1);
+        getline(&contents[i], &size, file);
+    }
+    fclose(file);
+
+    // Compares the current file's lines to the first file's lines
+    for (int i = 2; i < charc; i++)
+    {
+        char* line;
+        FILE* file = fopen(charv[i], "r");
+
+        for (int j = 0; j < sizeof(contents) / sizeof(contents[0]) && feof(file) == 0; j++)
         {
-            if ((j == 0 && files[j] == NULL) || (files[j - 1] != NULL && files[j] == NULL))
+            size_t size = INT_MAX;
+            getline(&line, &size, file);
+
+            if (strcmp(line, contents[j]) != 0)
             {
-                files[j] = file;
-                break;
-            }
-        }
-    }
-
-    // Checking the file names passed for similarity to the first file passed
-    for (int i = 1; i < charc; i++)
-    {
-        if (strcmp(charv[i], charv[1]) != 0) break;
-
-        if (i == charc - 1)
-        {
-            close(files, charc);
-            puts("Your files are the same");
-            return 0;
-        }
-    }
-
-    // Getting the lines of the files and putting them into the "contents" array (which contains an array of structs which contain an array of char*'s)
-    for (int i = 0; i < charc - 1; i++)
-    {
-        for (int j = 0; feof(files[i]) == 0 && j < MAX_LEN; j++)
-        {
-            size_t size = MAX_LEN;
-            getline(&contents[i].lines[j], &size, files[i]);
-        }
-    }
-
-    // Iterating through the files and comparing their lines to the first files' lines
-    for (int i = 0; i < charc - 1; i++)
-    {
-        for (int j = 0; contents[i].lines[j] != NULL; j++)
-        {
-            if (strcmp(contents[i].lines[j], contents[0].lines[j]) != 0)
-            {
-                close(files, charc);
+                fclose(file);
                 puts("Your files are not the same");
                 return 0;
             }
         }
+        fclose(file);
     }
-    close(files, charc);
-
     puts("Your files are the same");
     return 0;
 }
